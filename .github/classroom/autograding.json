@@ -1,11 +1,11 @@
 {
   "tests": [
     {
-      "name": "Run all tests",
-      "run": "mvn -B --quiet test",
+      "name": "All tests",
+      "run": "mvn -B --quiet compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=efs.task.todoapp.autograding.AutogradingTestRunner",
       "output": "",
       "comparison": "exact",
-      "points": 10
+      "points": 100
     }
   ]
 }

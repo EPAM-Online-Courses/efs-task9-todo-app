@@ -6,10 +6,10 @@ import java.util.function.Predicate;
 public interface Repository<ID, ENTITY> {
 
     /**
-     * Generates new identifier, assign it to the given entity and stores the entity in the repository.
+     * Stores the entity in the repository.
      *
      * @param entity entity to be stored
-     * @return identifier of the entry
+     * @return identifier of the entry, <code>null</code> if entry has not been saved
      */
     ID save(ENTITY entity);
 
