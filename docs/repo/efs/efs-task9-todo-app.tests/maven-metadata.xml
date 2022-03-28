@@ -4,8 +4,8 @@
   <artifactId>efs-task9-todo-app.tests</artifactId>
   <versioning>
     <versions>
-      <version>1.1.0-SNAPSHOT</version>
+      <version>1.2.0-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20220326224624</lastUpdated>
+    <lastUpdated>20220328065537</lastUpdated>
   </versioning>
 </metadata>
