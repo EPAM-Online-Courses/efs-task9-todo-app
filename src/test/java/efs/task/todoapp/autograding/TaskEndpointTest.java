@@ -61,109 +61,314 @@ class TaskEndpointTest {
         httpClient = HttpClient.newHttpClient();
     }
 
-    private static Stream<Arguments> authHeaderBadRequests() {
-        return Stream.of(
-                taskPostArguments(null, taskJson("task")),
-                taskPostArguments(BASE_64_USERNAME, taskJson("task")),
-                taskPostArguments("dummy:" + BASE_64_PASSWORD, taskJson("task")),
-                taskPostArguments(BASE_64_USERNAME + ":dummy", taskJson("task")),
-                taskGetArguments(null),
-                taskGetArguments(BASE_64_USERNAME),
-                taskGetArguments("dummy:" + BASE_64_PASSWORD),
-                taskGetArguments(BASE_64_USERNAME + ":dummy"),
-                taskPutArguments(null, taskJson("task")),
-                taskPutArguments(BASE_64_USERNAME, taskJson("task")),
-                taskPutArguments("dummy:" + BASE_64_PASSWORD, taskJson("task")),
-                taskPutArguments(BASE_64_USERNAME + ":dummy", taskJson("task")),
-                taskDeleteArguments(null),
-                taskDeleteArguments(BASE_64_USERNAME),
-                taskDeleteArguments("dummy:" + BASE_64_PASSWORD),
-                taskDeleteArguments(BASE_64_USERNAME + ":dummy")
-        ).map(Arguments::get)
-                .map(objects -> Arguments.of("Wrong or missing auth header", objects[0], objects[1]));
-    }
+  private static Stream<Arguments> authHeaderBadRequestsPost() {
+    return Stream.of(
+            taskPostArguments(null, taskJson("task")),
+            taskPostArguments(BASE_64_USERNAME, taskJson("task")),
+            taskPostArguments("dummy:" + BASE_64_PASSWORD, taskJson("task")),
+            taskPostArguments(BASE_64_USERNAME + ":dummy", taskJson("task")))
+        .map(Arguments::get)
+        .map(objects -> Arguments.of("Wrong or missing auth header", objects[0], objects[1]));
+  }
 
-    private static Stream<Arguments> taskBodyBadRequests() {
-        return Stream.of(
-                taskPostArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, ""),
-                taskPostArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson(null)),
-                taskPostArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson("buy milk", "not-a-date")),
-                taskPutArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, ""),
-                taskPutArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson(null)),
-                taskPutArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson("buy milk", "not-a-date"))
-        ).map(Arguments::get)
-                .map(objects -> Arguments.of("Wrong or missing task body", objects[0], objects[1]));
-    }
+  private static Stream<Arguments> authHeaderBadRequestsGet() {
+    return Stream.of(
+            taskGetArguments(null),
+            taskGetArguments(BASE_64_USERNAME),
+            taskGetArguments("dummy:" + BASE_64_PASSWORD),
+            taskGetArguments(BASE_64_USERNAME + ":dummy"))
+        .map(Arguments::get)
+        .map(objects -> Arguments.of("Wrong or missing auth header", objects[0], objects[1]));
+  }
 
-    private static Stream<Arguments> taskPathBadRequests() {
-        return Stream.of(
-                taskGetArguments("123", BASE_64_USERNAME + ":" + BASE_64_PASSWORD),
-                taskPutArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson("task")),
-                taskPutArguments("123", BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson("task")),
-                taskDeleteArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD),
-                taskDeleteArguments("123", BASE_64_USERNAME + ":" + BASE_64_PASSWORD)
-        ).map(Arguments::get)
-                .map(objects -> Arguments.of("Wrong or missing task path", objects[0], objects[1]));
-    }
+  private static Stream<Arguments> authHeaderBadRequestsPut() {
+    return Stream.of(
+            taskPutArguments(null, taskJson("task")),
+            taskPutArguments(BASE_64_USERNAME, taskJson("task")),
+            taskPutArguments("dummy:" + BASE_64_PASSWORD, taskJson("task")),
+            taskPutArguments(BASE_64_USERNAME + ":dummy", taskJson("task")))
+        .map(Arguments::get)
+        .map(objects -> Arguments.of("Wrong or missing auth header", objects[0], objects[1]));
+  }
+
+  private static Stream<Arguments> authHeaderBadRequestsDelete() {
+    return Stream.of(
+            taskDeleteArguments(null),
+            taskDeleteArguments(BASE_64_USERNAME),
+            taskDeleteArguments("dummy:" + BASE_64_PASSWORD),
+            taskDeleteArguments(BASE_64_USERNAME + ":dummy"))
+        .map(Arguments::get)
+        .map(objects -> Arguments.of("Wrong or missing auth header", objects[0], objects[1]));
+  }
+
+  private static Stream<Arguments> taskBodyBadRequestsPost() {
+    return Stream.of(
+            taskPostArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, ""),
+            taskPostArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson(null)),
+            taskPostArguments(
+                BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson("buy milk", "not-a-date")))
+        .map(Arguments::get)
+        .map(objects -> Arguments.of("Wrong or missing task body", objects[0], objects[1]));
+  }
+
+  private static Stream<Arguments> taskBodyBadRequestsPut() {
+    return Stream.of(
+            taskPutArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, ""),
+            taskPutArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson(null)),
+            taskPutArguments(
+                BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson("buy milk", "not-a-date")))
+        .map(Arguments::get)
+        .map(objects -> Arguments.of("Wrong or missing task body", objects[0], objects[1]));
+  }
+
+  private static Stream<Arguments> taskPathBadRequestsGet() {
+    return Stream.of(taskGetArguments("123", BASE_64_USERNAME + ":" + BASE_64_PASSWORD))
+        .map(Arguments::get)
+        .map(objects -> Arguments.of("Wrong or missing task path", objects[0], objects[1]));
+  }
+
+  private static Stream<Arguments> taskPathBadRequestsPut() {
+    return Stream.of(
+            taskPutArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson("task")),
+            taskPutArguments("123", BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson("task")))
+        .map(Arguments::get)
+        .map(objects -> Arguments.of("Wrong or missing task path", objects[0], objects[1]));
+  }
+
+  private static Stream<Arguments> taskPathBadRequestsDelete() {
+    return Stream.of(
+            taskDeleteArguments(BASE_64_USERNAME + ":" + BASE_64_PASSWORD),
+            taskDeleteArguments("123", BASE_64_USERNAME + ":" + BASE_64_PASSWORD))
+        .map(Arguments::get)
+        .map(objects -> Arguments.of("Wrong or missing task path", objects[0], objects[1]));
+  }
+
+  @ParameterizedTest(name = "{1}")
+  @MethodSource({"taskPathBadRequestsGet"})
+  @Timeout(1)
+  void shouldReturnBadRequestStatusIncorrectTaskPathGet(
+      String testPrefix, String testName, HttpRequest taskRequest)
+      throws IOException, InterruptedException {
+    // given
+    var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+    httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+    // when
+    var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+    // then
+    assertThat(httpResponse.statusCode())
+        .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+        .isEqualTo(BAD_REQUEST.getCode());
+  }
+
+  @ParameterizedTest(name = "{1}")
+  @MethodSource({"taskPathBadRequestsPut"})
+  @Timeout(1)
+  void shouldReturnBadRequestStatusIncorrectTaskPathPut(
+      String testPrefix, String testName, HttpRequest taskRequest)
+      throws IOException, InterruptedException {
+    // given
+    var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+    httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+    // when
+    var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+    // then
+    assertThat(httpResponse.statusCode())
+        .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+        .isEqualTo(BAD_REQUEST.getCode());
+  }
+
+  @ParameterizedTest(name = "{1}")
+  @MethodSource({"taskPathBadRequestsDelete"})
+  @Timeout(1)
+  void shouldReturnBadRequestStatusIncorrectTaskPathDelete(
+      String testPrefix, String testName, HttpRequest taskRequest)
+      throws IOException, InterruptedException {
+    // given
+    var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+    httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+    // when
+    var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+    // then
+    assertThat(httpResponse.statusCode())
+        .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+        .isEqualTo(BAD_REQUEST.getCode());
+  }
+
+  @ParameterizedTest(name = "{1}")
+  @MethodSource({"taskBodyBadRequestsPost"})
+  @Timeout(1)
+  void shouldReturnBadRequestStatusIncorrectTaskBodyPost(
+      String testPrefix, String testName, HttpRequest taskRequest)
+      throws IOException, InterruptedException {
+    // given
+    var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+    httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+    // when
+    var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+    // then
+    assertThat(httpResponse.statusCode())
+        .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+        .isEqualTo(BAD_REQUEST.getCode());
+  }
 
     @ParameterizedTest(name = "{1}")
-    @MethodSource({"taskBodyBadRequests", "taskPathBadRequests"})
+    @MethodSource({"taskBodyBadRequestsPut"})
     @Timeout(1)
-    void shouldReturnBadRequestStatus(String testPrefix, String testName, HttpRequest taskRequest) throws IOException, InterruptedException {
-        //given
-        var userRequest = userRequestBuilder()
-                .POST(ofString(userJson("username", "password")))
-                .build();
+    void shouldReturnBadRequestStatusIncorrectTaskBodyPut(
+            String testPrefix, String testName, HttpRequest taskRequest)
+            throws IOException, InterruptedException {
+        // given
+        var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
         httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
 
-        //when
+        // when
         var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
 
-        //then
+        // then
+        assertThat(httpResponse.statusCode())
+                .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+                .isEqualTo(BAD_REQUEST.getCode());
+    }
+
+  @ParameterizedTest(name = "{1}")
+  @MethodSource({"authHeaderBadRequestsPost"})
+  @Timeout(1)
+  void shouldReturnBadRequestStatusForIncorrectAuthenticationHeadersPost(
+      String testPrefix, String testName, HttpRequest taskRequest)
+      throws IOException, InterruptedException {
+    // given
+    var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+    httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+    // when
+    var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+    // then
+    assertThat(httpResponse.statusCode())
+        .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+        .isEqualTo(BAD_REQUEST.getCode());
+  }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource({"authHeaderBadRequestsGet"})
+    @Timeout(1)
+    void shouldReturnBadRequestStatusForIncorrectAuthenticationHeadersGet(
+            String testPrefix, String testName, HttpRequest taskRequest)
+            throws IOException, InterruptedException {
+        // given
+        var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+        httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+        // when
+        var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+        // then
         assertThat(httpResponse.statusCode())
                 .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
                 .isEqualTo(BAD_REQUEST.getCode());
     }
 
     @ParameterizedTest(name = "{1}")
-    @MethodSource({"authHeaderBadRequests"})
+    @MethodSource({"authHeaderBadRequestsPut"})
     @Timeout(1)
-    void shouldReturnBadRequestStatusAuth(String testPrefix, String testName, HttpRequest taskRequest) throws IOException, InterruptedException {
-        //given
-        var userRequest = userRequestBuilder()
-                .POST(ofString(userJson("username", "password")))
-                .build();
+    void shouldReturnBadRequestStatusForIncorrectAuthenticationHeadersPut(
+            String testPrefix, String testName, HttpRequest taskRequest)
+            throws IOException, InterruptedException {
+        // given
+        var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
         httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
 
-        //when
+        // when
         var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
 
-        //then
+        // then
         assertThat(httpResponse.statusCode())
                 .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
                 .isEqualTo(BAD_REQUEST.getCode());
     }
 
-    private static Stream<Arguments> wrongUsernameUnauthorizedRequests() {
+    @ParameterizedTest(name = "{1}")
+    @MethodSource({"authHeaderBadRequestsDelete"})
+    @Timeout(1)
+    void shouldReturnBadRequestStatusForIncorrectAuthenticationHeadersDelete(
+            String testPrefix, String testName, HttpRequest taskRequest)
+            throws IOException, InterruptedException {
+        // given
+        var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+        httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+        // when
+        var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+        // then
+        assertThat(httpResponse.statusCode())
+                .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+                .isEqualTo(BAD_REQUEST.getCode());
+    }
+
+    private static Stream<Arguments> wrongUsernameUnauthorizedRequestsGet() {
         return Stream.of(
-                taskPostArguments(BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD, taskJson("task")),
                 taskGetArguments(BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD),
-                taskGetArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD),
-                taskPutArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD, taskJson("task")),
-                taskDeleteArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD)
-
+                taskGetArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD)
         ).map(Arguments::get)
                 .map(objects -> Arguments.of("Wrong username", objects[0], objects[1]));
     }
 
-    private static Stream<Arguments> wrongPasswordUnauthorizedRequests() {
+    private static Stream<Arguments> wrongUsernameUnauthorizedRequestsPost() {
         return Stream.of(
-                taskPostArguments(BASE_64_USERNAME + ":" + BASE_64_WRONG_PASSWORD, taskJson("task")),
+                        taskPostArguments(BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD, taskJson("task"))
+                ).map(Arguments::get)
+                .map(objects -> Arguments.of("Wrong username", objects[0], objects[1]));
+    }
+
+    private static Stream<Arguments> wrongUsernameUnauthorizedRequestsPut() {
+        return Stream.of(
+                        taskPutArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD, taskJson("task"))
+                ).map(Arguments::get)
+                .map(objects -> Arguments.of("Wrong username", objects[0], objects[1]));
+    }
+
+    private static Stream<Arguments> wrongUsernameUnauthorizedRequestsDelete() {
+        return Stream.of(
+                        taskDeleteArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD)
+                ).map(Arguments::get)
+                .map(objects -> Arguments.of("Wrong username", objects[0], objects[1]));
+    }
+
+    private static Stream<Arguments> wrongPasswordUnauthorizedRequestsGet() {
+        return Stream.of(
                 taskGetArguments(BASE_64_USERNAME_2 + ":" + BASE_64_WRONG_PASSWORD),
-                taskGetArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_WRONG_PASSWORD),
-                taskPutArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_WRONG_PASSWORD, taskJson("task")),
-                taskDeleteArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_WRONG_PASSWORD)
+                taskGetArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_WRONG_PASSWORD)
         ).map(Arguments::get)
+                .map(objects -> Arguments.of("Wrong password", objects[0], objects[1]));
+    }
+
+    private static Stream<Arguments> wrongPasswordUnauthorizedRequestsPost() {
+        return Stream.of(
+                        taskPostArguments(BASE_64_USERNAME + ":" + BASE_64_WRONG_PASSWORD, taskJson("task"))
+                ).map(Arguments::get)
+                .map(objects -> Arguments.of("Wrong password", objects[0], objects[1]));
+    }
+
+    private static Stream<Arguments> wrongPasswordUnauthorizedRequestsPut() {
+        return Stream.of(
+                        taskPutArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_WRONG_PASSWORD, taskJson("task"))
+                ).map(Arguments::get)
+                .map(objects -> Arguments.of("Wrong password", objects[0], objects[1]));
+    }
+
+    private static Stream<Arguments> wrongPasswordUnauthorizedRequestsDelete() {
+        return Stream.of(
+                        taskDeleteArguments(ID, BASE_64_USERNAME_2 + ":" + BASE_64_WRONG_PASSWORD)
+                ).map(Arguments::get)
                 .map(objects -> Arguments.of("Wrong password", objects[0], objects[1]));
     }
 
@@ -205,24 +410,158 @@ class TaskEndpointTest {
         );
     }
 
+  @ParameterizedTest(name = "{1}")
+  @MethodSource({"wrongUsernameUnauthorizedRequestsGet"})
+  @Timeout(1)
+  void shouldReturnUnauthorizedStatusWrongUsernameGet(
+      String testPrefix, String testName, HttpRequest taskRequest)
+      throws IOException, InterruptedException {
+    // given
+    var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+    httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+    // when
+    var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+    // then
+    assertThat(httpResponse.statusCode())
+        .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+        .isEqualTo(UNAUTHORIZED.getCode());
+  }
+
     @ParameterizedTest(name = "{1}")
-    @MethodSource({"wrongUsernameUnauthorizedRequests", "wrongPasswordUnauthorizedRequests"})
+    @MethodSource({"wrongUsernameUnauthorizedRequestsPost"})
     @Timeout(1)
-    void shouldReturnUnauthorizedStatus(String testPrefix, String testName, HttpRequest taskRequest) throws IOException, InterruptedException {
-        //given
-        var userRequest = userRequestBuilder()
-                .POST(ofString(userJson("username", "password")))
-                .build();
+    void shouldReturnUnauthorizedStatusWrongUsernamePost(
+            String testPrefix, String testName, HttpRequest taskRequest)
+            throws IOException, InterruptedException {
+        // given
+        var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
         httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
 
-        //when
+        // when
         var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
 
-        //then
+        // then
         assertThat(httpResponse.statusCode())
                 .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
                 .isEqualTo(UNAUTHORIZED.getCode());
     }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource({"wrongUsernameUnauthorizedRequestsPut"})
+    @Timeout(1)
+    void shouldReturnUnauthorizedStatusWrongUsernamePut(
+            String testPrefix, String testName, HttpRequest taskRequest)
+            throws IOException, InterruptedException {
+        // given
+        var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+        httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+        // when
+        var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+        // then
+        assertThat(httpResponse.statusCode())
+                .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+                .isEqualTo(UNAUTHORIZED.getCode());
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource({"wrongUsernameUnauthorizedRequestsDelete"})
+    @Timeout(1)
+    void shouldReturnUnauthorizedStatusWrongUsername(
+            String testPrefix, String testName, HttpRequest taskRequest)
+            throws IOException, InterruptedException {
+        // given
+        var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+        httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+        // when
+        var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+        // then
+        assertThat(httpResponse.statusCode())
+                .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+                .isEqualTo(UNAUTHORIZED.getCode());
+    }
+
+  @ParameterizedTest(name = "{1}")
+  @MethodSource({"wrongPasswordUnauthorizedRequestsGet"})
+  @Timeout(1)
+  void shouldReturnUnauthorizedStatusWrongPasswordGet(
+      String testPrefix, String testName, HttpRequest taskRequest)
+      throws IOException, InterruptedException {
+    // given
+    var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+    httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+    // when
+    var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+    // then
+    assertThat(httpResponse.statusCode())
+        .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+        .isEqualTo(UNAUTHORIZED.getCode());
+  }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource({"wrongPasswordUnauthorizedRequestsPost"})
+    @Timeout(1)
+    void shouldReturnUnauthorizedStatusWrongPasswordPost(
+            String testPrefix, String testName, HttpRequest taskRequest)
+            throws IOException, InterruptedException {
+        // given
+        var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+        httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+        // when
+        var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+        // then
+        assertThat(httpResponse.statusCode())
+                .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+                .isEqualTo(UNAUTHORIZED.getCode());
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource({"wrongPasswordUnauthorizedRequestsPut"})
+    @Timeout(1)
+    void shouldReturnUnauthorizedStatusWrongPasswordPut(
+            String testPrefix, String testName, HttpRequest taskRequest)
+            throws IOException, InterruptedException {
+        // given
+        var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+        httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+        // when
+        var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+        // then
+        assertThat(httpResponse.statusCode())
+                .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+                .isEqualTo(UNAUTHORIZED.getCode());
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource({"wrongPasswordUnauthorizedRequestsDelete"})
+    @Timeout(1)
+    void shouldReturnUnauthorizedStatusWrongPasswordDelete(
+            String testPrefix, String testName, HttpRequest taskRequest)
+            throws IOException, InterruptedException {
+        // given
+        var userRequest = userRequestBuilder().POST(ofString(userJson("username", "password"))).build();
+        httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+        // when
+        var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+        // then
+        assertThat(httpResponse.statusCode())
+                .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+                .isEqualTo(UNAUTHORIZED.getCode());
+    }
+
 
     @Test
     @Timeout(1)
@@ -382,19 +721,31 @@ class TaskEndpointTest {
         );
     }
 
-    private static Stream<Arguments> notFoundRequests() {
+    private static Stream<Arguments> notFoundRequestsGet() {
         return Stream.of(
-                taskGetArguments(ID, BASE_64_USERNAME + ":" + BASE_64_PASSWORD),
-                taskPutArguments(ID, BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson("task")),
-                taskDeleteArguments(ID, BASE_64_USERNAME + ":" + BASE_64_PASSWORD)
+                taskGetArguments(ID, BASE_64_USERNAME + ":" + BASE_64_PASSWORD)
         ).map(Arguments::get)
                 .map(objects -> Arguments.of("Task not found", objects[0], objects[1]));
     }
 
+    private static Stream<Arguments> notFoundRequestsPut() {
+        return Stream.of(
+                        taskPutArguments(ID, BASE_64_USERNAME + ":" + BASE_64_PASSWORD, taskJson("task"))
+                ).map(Arguments::get)
+                .map(objects -> Arguments.of("Task not found", objects[0], objects[1]));
+    }
+
+    private static Stream<Arguments> notFoundRequestsDelete() {
+        return Stream.of(
+                        taskDeleteArguments(ID, BASE_64_USERNAME + ":" + BASE_64_PASSWORD)
+                ).map(Arguments::get)
+                .map(objects -> Arguments.of("Task not found", objects[0], objects[1]));
+    }
+
     @ParameterizedTest(name = "{1}")
-    @MethodSource("notFoundRequests")
+    @MethodSource("notFoundRequestsGet")
     @Timeout(1)
-    void shouldReturnNotFound(String testPrefix, String testName, HttpRequest taskRequest) throws IOException, InterruptedException {
+    void shouldReturnNotFoundGet(String testPrefix, String testName, HttpRequest taskRequest) throws IOException, InterruptedException {
         //given
         var userRequest = userRequestBuilder()
                 .POST(ofString(userJson("username", "password")))
@@ -410,10 +761,68 @@ class TaskEndpointTest {
                 .isEqualTo(NOT_FOUND.getCode());
     }
 
-    private static Stream<Arguments> forbiddenRequests() {
+    @ParameterizedTest(name = "{1}")
+    @MethodSource("notFoundRequestsPut")
+    @Timeout(1)
+    void shouldReturnNotFoundPut(String testPrefix, String testName, HttpRequest taskRequest) throws IOException, InterruptedException {
+        //given
+        var userRequest = userRequestBuilder()
+                .POST(ofString(userJson("username", "password")))
+                .build();
+        httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+        //when
+        var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+        //then
+        assertThat(httpResponse.statusCode())
+                .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+                .isEqualTo(NOT_FOUND.getCode());
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource("notFoundRequestsDelete")
+    @Timeout(1)
+    void shouldReturnNotFoundDelete(String testPrefix, String testName, HttpRequest taskRequest) throws IOException, InterruptedException {
+        //given
+        var userRequest = userRequestBuilder()
+                .POST(ofString(userJson("username", "password")))
+                .build();
+        httpClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+        //when
+        var httpResponse = httpClient.send(taskRequest, HttpResponse.BodyHandlers.ofString());
+
+        //then
+        assertThat(httpResponse.statusCode())
+                .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(taskRequest))
+                .isEqualTo(NOT_FOUND.getCode());
+    }
+
+    private static Stream<Arguments> forbiddenRequestsGet() {
         return Stream.<BiFunction<String, String, HttpRequest>>of(
-                (taskId, authHeader) -> (HttpRequest) taskGetArguments(taskId, authHeader).get()[1],
-                (taskId, authHeader) -> (HttpRequest) taskPutArguments(taskId, authHeader, taskJson("eat an apple")).get()[1],
+                (taskId, authHeader) -> (HttpRequest) taskGetArguments(taskId, authHeader).get()[1]
+        ).map(biFunction -> {
+            var testName = HEADER_AUTH + " = " + BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD;
+            return Arguments.of("Access forbidden",
+                    testName,
+                    (Function<String, HttpRequest>) taskId -> biFunction.apply(taskId, BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD));
+        });
+    }
+
+    private static Stream<Arguments> forbiddenRequestsPut() {
+        return Stream.<BiFunction<String, String, HttpRequest>>of(
+                (taskId, authHeader) -> (HttpRequest) taskPutArguments(taskId, authHeader, taskJson("eat an apple")).get()[1]
+        ).map(biFunction -> {
+            var testName = HEADER_AUTH + " = " + BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD;
+            return Arguments.of("Access forbidden",
+                    testName,
+                    (Function<String, HttpRequest>) taskId -> biFunction.apply(taskId, BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD));
+        });
+    }
+
+    private static Stream<Arguments> forbiddenRequestsDelete() {
+        return Stream.<BiFunction<String, String, HttpRequest>>of(
                 (taskId, authHeader) -> (HttpRequest) taskDeleteArguments(taskId, authHeader).get()[1]
         ).map(biFunction -> {
             var testName = HEADER_AUTH + " = " + BASE_64_USERNAME_2 + ":" + BASE_64_PASSWORD;
@@ -424,9 +833,79 @@ class TaskEndpointTest {
     }
 
     @ParameterizedTest(name = "{1}")
-    @MethodSource("forbiddenRequests")
+    @MethodSource("forbiddenRequestsGet")
     @Timeout(1)
-    void shouldReturnForbiddenStatus(String testPrefix,
+    void shouldReturnForbiddenStatusGet(String testPrefix,
+                                     String testName,
+                                     Function<String, HttpRequest> requestForUser2Function) throws IOException, InterruptedException {
+        //given
+        var user1Request = userRequestBuilder()
+                .POST(ofString(userJson("username", "password")))
+                .build();
+        httpClient.send(user1Request, HttpResponse.BodyHandlers.ofString());
+
+        var user2Request = userRequestBuilder()
+                .POST(ofString(userJson("username2", "password")))
+                .build();
+        httpClient.send(user2Request, HttpResponse.BodyHandlers.ofString());
+
+        var postTaskForUser1Request = taskRequestBuilder()
+                .header(HEADER_AUTH, BASE_64_USERNAME + ":" + BASE_64_PASSWORD)
+                .POST(ofString(taskJson("buy milk", "2021-06-30")))
+                .build();
+        var postTaskForUser1Response = httpClient.send(postTaskForUser1Request, HttpResponse.BodyHandlers.ofString());
+        var taskId = getIdOfCreatedTask(postTaskForUser1Response);
+
+        var httpRequest = requestForUser2Function.apply(taskId);
+
+        //when
+        var httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+        //then
+        assertThat(httpResponse.statusCode())
+                .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(httpRequest))
+                .isEqualTo(FORBIDDEN.getCode());
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource("forbiddenRequestsPut")
+    @Timeout(1)
+    void shouldReturnForbiddenStatusPut(String testPrefix,
+                                     String testName,
+                                     Function<String, HttpRequest> requestForUser2Function) throws IOException, InterruptedException {
+        //given
+        var user1Request = userRequestBuilder()
+                .POST(ofString(userJson("username", "password")))
+                .build();
+        httpClient.send(user1Request, HttpResponse.BodyHandlers.ofString());
+
+        var user2Request = userRequestBuilder()
+                .POST(ofString(userJson("username2", "password")))
+                .build();
+        httpClient.send(user2Request, HttpResponse.BodyHandlers.ofString());
+
+        var postTaskForUser1Request = taskRequestBuilder()
+                .header(HEADER_AUTH, BASE_64_USERNAME + ":" + BASE_64_PASSWORD)
+                .POST(ofString(taskJson("buy milk", "2021-06-30")))
+                .build();
+        var postTaskForUser1Response = httpClient.send(postTaskForUser1Request, HttpResponse.BodyHandlers.ofString());
+        var taskId = getIdOfCreatedTask(postTaskForUser1Response);
+
+        var httpRequest = requestForUser2Function.apply(taskId);
+
+        //when
+        var httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+        //then
+        assertThat(httpResponse.statusCode())
+                .as(() -> "[" + testPrefix + " : " + testName + "] " + wrongCodeMessage(httpRequest))
+                .isEqualTo(FORBIDDEN.getCode());
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource("forbiddenRequestsDelete")
+    @Timeout(1)
+    void shouldReturnForbiddenStatusDelete(String testPrefix,
                                      String testName,
                                      Function<String, HttpRequest> requestForUser2Function) throws IOException, InterruptedException {
         //given
