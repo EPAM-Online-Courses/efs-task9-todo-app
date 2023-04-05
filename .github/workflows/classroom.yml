@@ -16,4 +16,4 @@ jobs:
           java-version: '17'
           cache: 'maven'
       - name: Autograding
-        uses: education/autograding@v1
+        uses: DrErickson/autograding@v2.1.1
