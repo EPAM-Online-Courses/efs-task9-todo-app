@@ -14,8 +14,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <version.plugin.maven.compiler>3.11.0</version.plugin.maven.compiler>
-        <version.plugin.maven.surefire>3.0.0-M9</version.plugin.maven.surefire>
+        <version.plugin.maven.compiler>3.12.1</version.plugin.maven.compiler>
+        <version.plugin.maven.surefire>3.2.5</version.plugin.maven.surefire>
     </properties>
 
     <dependencies>
